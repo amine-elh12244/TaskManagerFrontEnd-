@@ -126,6 +126,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = value;
   }
 
+  search() {
+    // Implement search functionality here if needed
+  }
+
   async generatePDF(element: any): Promise<Blob> {
     const docDefinition: TDocumentDefinitions = {
       content: [
@@ -223,7 +227,114 @@ export class UsersComponent implements OnInit, AfterViewInit {
     window.open(url);
   }
 
-  search() {
-    // Implement search functionality here if needed
+  async generateAndShowAllPDF() {
+    const docDefinition: TDocumentDefinitions = {
+      content: [
+        {
+          text: 'Liste de Toutes les  Utilisateurs',
+          style: 'header'
+        },
+        {
+          table: {
+            widths: ['*', '*', '*', '*', '*', '*'],
+            body: [
+              ['Nom', 'Age', 'Email', 'Famille', 'Coefficient', 'Remarques'],
+              ...this.dataSource.data.map((user: any) => [
+                user.nom,
+                user.age,
+                user.email,
+                user.fuser ? user.fuser.libelleFamille : 'N/A',
+                user.fuser ? user.fuser.coefficient : 'N/A',
+                user.fuser ? user.fuser.remarques : 'N/A'
+              ])
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        }
+      }
+    };
+
+    const pdfBlob = await new Promise<Blob>((resolve, reject) => {
+      pdfMake.createPdf(docDefinition).getBlob((blob) => {
+        resolve(blob);
+      });
+    });
+
+    const url = URL.createObjectURL(pdfBlob);
+    window.open(url);
+  }
+
+  generateCSV() {
+    const csvData = this.dataSource.data.map((user: any) => {
+      return {
+        Nom: user.nom,
+        Age: user.age,
+        Email: user.email,
+        Famille: user.fuser ? user.fuser.libelleFamille : 'N/A',
+        Coefficient: user.fuser ? user.fuser.coefficient : 'N/A',
+        Remarques: user.fuser ? user.fuser.remarques : 'N/A'
+      };
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," +
+      ["Nom;Age;Email;Famille;Coefficient;Remarques"].concat(
+        csvData.map(e => Object.values(e).join(";"))
+      ).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "users.csv");
+    document.body.appendChild(link); // Required for FF
+
+    link.click();
+  }
+
+  generateAndShowAllHTML() {
+    const htmlContent = `
+      <html>
+      <head>
+        <title>Liste de Toutes  Utilisateurs</title>
+      </head>
+      <body>
+        <h1>Liste de Toutes les Familles Utilisateurs</h1>
+        <table border="1" cellpadding="5" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Age</th>
+              <th>Email</th>
+              <th>Famille</th>
+              <th>Coefficient</th>
+              <th>Remarques</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${this.dataSource.data.map((user: any) => `
+              <tr>
+                <td>${user.nom}</td>
+                <td>${user.age}</td>
+                <td>${user.email}</td>
+                <td>${user.fuser ? user.fuser.libelleFamille : 'N/A'}</td>
+                <td>${user.fuser ? user.fuser.coefficient : 'N/A'}</td>
+                <td>${user.fuser ? user.fuser.remarques : 'N/A'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const newWindow = window.open('', '_blank');
+    newWindow!.document.write(htmlContent);
+    newWindow!.document.close();
   }
 }

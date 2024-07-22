@@ -1,0 +1,40 @@
+/* Style pour les boutons d'action */
+.action-buttons {
+  margin-bottom: 20px; /* Espace entre le bouton Ajouter et les autres boutons */
+}
+
+.export-buttons {
+  margin-bottom: 20px; /* Espace entre les boutons d'exportation et le reste */
+}
+
+.print-all-btn {
+  background-color: #ff9800; /* Couleur de fond personnalisée */
+  color: white; /* Couleur du texte */
+  margin-right: 10px; /* Espace entre les boutons */
+}
+
+.export-csv-btn {
+  background-color: #4caf50; /* Couleur de fond personnalisée */
+  color: white; /* Couleur du texte */
+}
+
+/* Style optionnel pour le bouton si vous souhaitez un style particulier */
+.print-all-btn, .export-csv-btn {
+  font-weight: bold; /* Texte en gras */
+}
+
+.action-buttons {
+  margin-bottom: 20px;
+}
+
+.export-buttons {
+  margin-bottom: 20px;
+}
+
+.print-all-btn {
+  margin-right: 10px;
+}
+
+.export-csv-btn {
+  margin-right: 10px;
+}

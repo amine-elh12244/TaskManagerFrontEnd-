@@ -8,10 +8,10 @@ import Swal from 'sweetalert2';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from "pdfmake/interfaces";
-import {Router} from "@angular/router";
-import {UpdateTacheDialogComponent} from "../update-tache-dialog/update-tache-dialog.component";
-import {Observable} from "rxjs";
-import {HDetTacheService} from "../../services/h-det-tache.service";
+import { Router } from "@angular/router";
+import { UpdateTacheDialogComponent } from "../update-tache-dialog/update-tache-dialog.component";
+import { Observable } from "rxjs";
+import { HDetTacheService } from "../../services/h-det-tache.service";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -27,8 +27,11 @@ export class GestionTachesComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private hEntTacheService: HEntTacheService, private hDetTacheService: HDetTacheService,public dialog: MatDialog
-  ,    private router: Router // Inject Router
+  constructor(
+    private hEntTacheService: HEntTacheService,
+    private hDetTacheService: HDetTacheService,
+    public dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -47,8 +50,6 @@ export class GestionTachesComponent implements OnInit, AfterViewInit {
       this.dataSource.sort = this.sort;
     });
   }
-
-
 
   onDelete(id: string): void {
     Swal.fire({
@@ -74,7 +75,6 @@ export class GestionTachesComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
 
   async generatePDF(element: any): Promise<Blob> {
     try {
@@ -194,9 +194,6 @@ export class GestionTachesComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-
-
   async onPrint(id: string) {
     try {
       const task = this.dataSource.data.find(task => task.idHEntTache === id);
@@ -213,18 +210,138 @@ export class GestionTachesComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-
-
-
   onEdit(id: string): void {
     this.router.navigate(['/admin/ModiferHentHdet', id]);
   }
-
 
   getHDetTachesByHEntTacheId(id: string): Observable<any[]> {
     return this.hDetTacheService.findByHEntTacheId(id);
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 
+
+  async exportToPDF() {
+    const allTasks = this.dataSource.data;
+    const tableBody = [
+      [
+        { text: 'Libellé Journée', style: 'tableHeader' },
+        { text: 'Date d\'Opération', style: 'tableHeader' },
+        { text: 'Remarques', style: 'tableHeader' },
+        { text: 'Utilisateur', style: 'tableHeader' }
+      ]
+    ];
+
+    allTasks.forEach((task: any) => {
+      const utilisateur = task.users ? task.users.nom : 'Utilisateur inconnu';
+      tableBody.push([
+        { text: task.libelleJournee || 'Non défini', style: 'tableData' },
+        { text: task.dateOperation || 'Non défini', style: 'tableData' },
+        { text: task.remarques || 'Non défini', style: 'tableData' },
+        { text: utilisateur, style: 'tableData' }
+      ]);
+    });
+
+    const docDefinition: TDocumentDefinitions = {
+      content: [
+        { text: 'Toutes les Tâches', style: 'title', alignment: 'center' },
+        { text: '', margin: [0, 20] },
+        {
+          table: {
+            widths: ['*', '*', '*', '*'],
+            body: tableBody
+          },
+          layout: 'lightHorizontalLines'
+        }
+      ],
+      styles: {
+        title: {
+          fontSize: 20,
+          bold: true
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: '#eeeeee',
+          margin: [0, 5, 0, 5]
+        },
+        tableData: {
+          margin: [0, 5, 0, 5]
+        }
+      },
+      defaultStyle: {
+        columnGap: 20
+      }
+    };
+
+    const pdfBlob = await new Promise<Blob>((resolve, reject) => {
+      pdfMake.createPdf(docDefinition).getBlob((blob) => {
+        resolve(blob);
+      });
+    });
+
+    const url = URL.createObjectURL(pdfBlob);
+    window.open(url);
+  }
+
+
+
+  exportToCSV() {
+    const csvData = this.dataSource.data.map((task: any) => ({
+      libelleJournee: task.libelleJournee,
+      dateOperation: task.dateOperation,
+      remarques: task.remarques,
+      utilisateur: task.users.nom
+    }));
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + ["Libelle Journée;Date d'Opération;Remarques;Utilisateur"]
+        .concat(csvData.map(e => `${e.libelleJournee};${e.dateOperation};${e.remarques};${e.utilisateur}`))
+        .join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "taches.csv");
+    document.body.appendChild(link); // Required for FF
+    link.click();
+  }
+
+  exportToHTML() {
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Exportation des Entete Tâches </title>
+        </head>
+        <body>
+          <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Libellé Journée</th>
+                <th>Date d'Opération</th>
+                <th>Remarques</th>
+                <th>Utilisateur</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${this.dataSource.data.map((task: any) => `
+                <tr>
+                  <td>${task.libelleJournee}</td>
+                  <td>${task.dateOperation}</td>
+                  <td>${task.remarques}</td>
+                  <td>${task.users.nom}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>`;
+    const link = document.createElement("a");
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = "taches.html";
+    document.body.appendChild(link);
+    link.click();
+  }
 }

@@ -5,6 +5,28 @@
     </mat-card-header>
     <mat-card-content>
 
+
+      <div class="export-buttons">
+        <button mat-raised-button color="accent" class="print-all-btn" (click)="exportToPDF()"> Imprimer Toutes Entete Tâches</button>
+        <button mat-raised-button color="accent" class="export-csv-btn" (click)="exportToCSV()">Exporter en CSV</button>
+        <button mat-raised-button color="warn" class="export-html-btn" (click)="exportToHTML()">Exporter en HTML</button>
+      </div>
+
+      <div class="filters">
+        <mat-form-field>
+          <mat-label>Filtrer par Libellé Journée</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Libellé Journée" #libelleJourneeInput>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Filtrer par Date d'Opération</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Date d'Opération" #dateOperationInput>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Filtrer par Utilisateur</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Utilisateur" #utilisateurInput>
+        </mat-form-field>
+      </div>
+
       <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
         <!-- Libellé Journée Column -->
         <ng-container matColumnDef="libelleJournee">

@@ -11,6 +11,9 @@ import {
   UpdateDetailDialogComponentComponentComponent
 } from "../update-detail-dialog-component-component/update-detail-dialog-component-component.component";
 
+import pdfMake from 'pdfmake/build/pdfmake';
+import {TDocumentDefinitions} from "pdfmake/interfaces";
+
 @Component({
   selector: 'app-update-tache-dialog',
   templateUrl: './update-tache-dialog.component.html',
@@ -284,4 +287,107 @@ export class UpdateTacheDialogComponent implements OnInit {
       console.error('Error updating detTache with hentTache', error);
     });
   }
+
+  async generatePDF(detail: any): Promise<Blob> {
+    const docDefinition: TDocumentDefinitions = {
+      content: [
+        {
+          columns: [
+            {
+              stack: [
+                { text: 'Détails de la Tâche', style: 'title', alignment: 'left' },
+                { text: 'Information détaillée sur la tâche', style: 'subheader', alignment: 'left' }
+              ]
+            }
+          ]
+        },
+        { text: '', margin: [0, 20] },
+        {
+          table: {
+            widths: ['*', '*'],
+            body: [
+              [
+                { text: 'Libellé Tâche', style: 'tableHeader' },
+                { text: detail.tache ? detail.tache.libelleTache : 'N/A', style: 'tableData' }
+              ],
+              [
+                { text: 'Heure Début', style: 'tableHeader' },
+                { text: detail.hdebut || 'N/A', style: 'tableData' }
+              ],
+              [
+                { text: 'Heure Fin', style: 'tableHeader' },
+                { text: detail.hfin || 'N/A', style: 'tableData' }
+              ],
+              [
+                { text: 'Temps Différence (minutes)', style: 'tableHeader' },
+                { text: detail.tempsDiff || 'N/A', style: 'tableData' }
+              ],
+              [
+                { text: 'Coefficient', style: 'tableHeader' },
+                { text: detail.coefficient || 'N/A', style: 'tableData' }
+              ],
+              [
+                { text: 'Prix Calculé', style: 'tableHeader' },
+                { text: detail.prixCalc || 'N/A', style: 'tableData' }
+              ],
+              [
+                { text: 'Remarques', style: 'tableHeader' },
+                { text: detail.remarques || 'N/A', style: 'tableData' }
+              ]
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        },
+        { text: '', margin: [0, 20] },
+        {
+          columns: [
+            { text: '____________________________', alignment: 'left' },
+            { text: '____________________________', alignment: 'right' }
+          ]
+        },
+        {
+          columns: [
+            { text: 'Signature', alignment: 'left', margin: [0, 5, 0, 0] },
+            { text: 'Date', alignment: 'right', margin: [0, 5, 0, 0] }
+          ]
+        }
+      ],
+      styles: {
+        title: {
+          fontSize: 20,
+          bold: true
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 10, 0, 5]
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: '#eeeeee',
+          margin: [0, 5, 0, 5]
+        },
+        tableData: {
+          margin: [0, 5, 0, 5]
+        }
+      },
+      defaultStyle: {
+        columnGap: 20
+      }
+    };
+
+    return new Promise((resolve, reject) => {
+      pdfMake.createPdf(docDefinition).getBlob((blob) => {
+        resolve(blob);
+      });
+    });
+  }
+
+  async printDetail(detail: any) {
+    const pdfBlob = await this.generatePDF(detail);
+    const url = URL.createObjectURL(pdfBlob);
+    window.open(url);
+  }
+
+
 }

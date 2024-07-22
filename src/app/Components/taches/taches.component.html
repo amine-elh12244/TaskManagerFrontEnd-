@@ -4,12 +4,21 @@
       <mat-card-title>Gestion de Tache</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <div class="action-buttons">
+
       <button mat-raised-button color="primary" (click)="openAddDialog()">Ajouter Tache</button>
 
+      </div>
+
+      <div class="export-buttons">
+        <button mat-raised-button color="accent" class="print-all-btn" (click)="generateAndShowAllPDF()">Imprimer Toutes Taches</button>
+        <button mat-raised-button color="accent" class="export-csv-btn" (click)="generateCSV()">Exporter en CSV</button>
+        <button mat-raised-button color="warn" class="export-html-btn" (click)="generateAndShowAllHTML()">Exporter en HTML</button>
+      </div>
 
       <form class="form">
         <mat-form-field appearance="fill">
-          <mat-label>libelle Tache</mat-label>
+          <mat-label>Libelle Tache</mat-label>
           <input matInput [(ngModel)]="libelleTache" (change)="searchparlibelleTache($event)">
         </mat-form-field>
         <mat-form-field appearance="fill">
@@ -22,8 +31,6 @@
         </mat-form-field>
         <button mat-raised-button color="primary" (click)="search()">Search</button>
       </form>
-
-
 
       <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
         <!-- Libellé Tache Column -->
@@ -51,8 +58,6 @@
             <button mat-button color="primary" (click)="openEditDialog(element)">Edit</button>
             <button mat-button color="warn" (click)="deleteTache(element.idTache)">Delete</button>
             <button mat-button color="blue" (click)="generateAndShowPDF(element)">Imprimer</button>
-
-
           </td>
         </ng-container>
 

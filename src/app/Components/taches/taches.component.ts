@@ -213,7 +213,147 @@ export class TachesComponent implements OnInit {
     await this.generatePDF(element);
   }
 
-  search() {
+  async generateAndShowAllPDF(): Promise<void> {
+    const docDefinition: TDocumentDefinitions = {
+      content: [
+        {
+          text: 'Liste des Taches',
+          style: 'title',
+          alignment: 'center'
+        },
+        { text: '', margin: [0, 20] },
+        {
+          table: {
+            widths: ['*', '*', '*'],
+            body: [
+              [
+                { text: 'Libellé Tache', style: 'tableHeader' },
+                { text: 'Coefficient', style: 'tableHeader' },
+                { text: 'Remarques', style: 'tableHeader' }
+              ],
+              ...this.dataSource.data.map((element: any) => [
+                { text: element.libelleTache, style: 'tableData' },
+                { text: element.coefficient, style: 'tableData' },
+                { text: element.remarques, style: 'tableData' }
+              ])
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        }
+      ],
+      styles: {
+        title: {
+          fontSize: 20,
+          bold: true
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: '#eeeeee',
+          margin: [0, 5, 0, 5]
+        },
+        tableData: {
+          margin: [0, 5, 0, 5]
+        }
+      },
+      defaultStyle: {
+        columnGap: 20
+      }
+    };
 
+    pdfMake.createPdf(docDefinition).open();
+  }
+
+  generateCSV(): void {
+    const csvData = this.dataSource.data.map((element: any) => ({
+      'Libelle  Tache': element.libelleTache,
+      'Coefficient': element.coefficient,
+      'Remarques': element.remarques
+    }));
+
+    const csvContent = this.convertToCSV(csvData);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'taches.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  convertToCSV(objArray: any[]): string {
+    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
+    const headers = Object.keys(array[0]);
+    str += headers.join(';') + '\r\n';
+
+    for (let i = 0; i < array.length; i++) {
+      let line = '';
+      for (const index in array[i]) {
+        if (line !== '') line += ';';
+        line += array[i][index];
+      }
+      str += line + '\r\n';
+    }
+    return str;
+  }
+
+  async generateAndShowAllHTML(): Promise<void> {
+    let htmlContent = `
+      <html>
+      <head>
+        <style>
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Liste des Taches</h2>
+        <table>
+          <tr>
+            <th>Libellé Tache</th>
+            <th>Coefficient</th>
+            <th>Remarques</th>
+          </tr>
+    `;
+
+    this.dataSource.data.forEach((element: any) => {
+      htmlContent += `
+        <tr>
+          <td>${element.libelleTache}</td>
+          <td>${element.coefficient}</td>
+          <td>${element.remarques}</td>
+        </tr>
+      `;
+    });
+
+    htmlContent += `
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'taches.html');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  search() {
+    // Implement search logic
   }
 }

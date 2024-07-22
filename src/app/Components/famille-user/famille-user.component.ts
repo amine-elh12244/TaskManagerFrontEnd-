@@ -208,13 +208,167 @@ export class FamilleUserComponent implements OnInit, AfterViewInit {
     });
   }
 
+
   async generateAndShowPDF(element: any) {
     const pdfBlob = await this.generatePDF(element);
+    const url = URL.createObjectURL(pdfBlob as Blob);
+    window.open(url);
+  }
+
+
+
+  async generateAndShowAllPDF() {
+    const allFUsers = this.dataSource.data;
+    const tableBody = [
+      [
+        { text: 'Libellé Famille', style: 'tableHeader' },
+        { text: 'Coefficient', style: 'tableHeader' },
+        { text: 'Remarques', style: 'tableHeader' }
+      ]
+    ];
+
+    allFUsers.forEach((element: any) => {
+      tableBody.push([
+        { text: element.libelleFamille, style: 'tableData' },
+        { text: element.coefficient, style: 'tableData' },
+        { text: element.remarques, style: 'tableData' }
+      ]);
+    });
+
+    const docDefinition: TDocumentDefinitions = {
+      content: [
+        { text: 'Famille Users', style: 'title', alignment: 'center' },
+        { text: '', margin: [0, 20] },
+        {
+          table: {
+            widths: ['*', '*', '*'],
+            body: tableBody
+          },
+          layout: 'lightHorizontalLines'
+        }
+      ],
+      styles: {
+        title: {
+          fontSize: 20,
+          bold: true
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: '#eeeeee',
+          margin: [0, 5, 0, 5]
+        },
+        tableData: {
+          margin: [0, 5, 0, 5]
+        }
+      },
+      defaultStyle: {
+        columnGap: 20
+      }
+    };
+
+    const pdfBlob = await new Promise<Blob>((resolve, reject) => {
+      pdfMake.createPdf(docDefinition).getBlob((blob) => {
+        resolve(blob);
+      });
+    });
+
     const url = URL.createObjectURL(pdfBlob);
     window.open(url);
+  }
+
+
+
+  generateCSV() {
+    const allFUsers = this.dataSource.data;
+    const csvData = this.convertToCSV(allFUsers);
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'familles_users.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  convertToCSV(objArray: any): string {
+    const array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    let str = 'ID;Libelle Famille;Coefficient;Remarques\n';
+
+    for (const i in array) {
+      let line = '';
+      for (const index in array[i]) {
+        if (line != '') line += ';';
+        line += array[i][index];
+      }
+      str += line + '\n';
+    }
+
+    return str;
   }
 
   search() {
     // Implement search functionality here if needed
   }
+
+  async generateAndShowAllHTML() {
+    const allFUsers = this.dataSource.data;
+
+    let htmlContent = `
+    <html>
+      <head>
+        <title>Famille Users</title>
+        <style>
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+          }
+          th {
+            background-color: #f2f2f2;
+            text-align: left;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Famille Users</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Libellé Famille</th>
+              <th>Coefficient</th>
+              <th>Remarques</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+
+    allFUsers.forEach((element: any) => {
+      htmlContent += `
+      <tr>
+        <td>${element.libelleFamille}</td>
+        <td>${element.coefficient}</td>
+        <td>${element.remarques}</td>
+      </tr>
+    `;
+    });
+
+    htmlContent += `
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'familles_users.html';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
 }
