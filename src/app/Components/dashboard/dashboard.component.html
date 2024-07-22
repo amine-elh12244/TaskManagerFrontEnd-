@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Tableau de bord</h2>
+    </div>
+    <div class="card-body">
+      <!-- Dashboard for Admin -->
+      <div *ngIf="true"> <!-- Assuming isAdmin() equivalent -->
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="counter bg-primary">
+              <mat-icon>assignment</mat-icon>
+              <h3>Utilisateurs</h3>
+              <p class="counter-value">{{ displayedUsersCount }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="counter bg-success">
+              <mat-icon>supervised_user_circle</mat-icon>
+              <h3>Utilisateurs de famille</h3>
+              <p class="counter-value">{{ displayedFamilleUsersCount }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="counter bg-info">
+              <mat-icon>assignment_turned_in</mat-icon>
+              <h3>Tâches</h3>
+              <p class="counter-value">{{ displayedTachesCount }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="counter bg-warning">
+              <mat-icon>assignment_ind</mat-icon>
+              <h3>Entêtes de tâches</h3>
+              <p class="counter-value">{{ displayedEntetTachesCount }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="counter bg-danger">
+              <mat-icon>assignment_late</mat-icon>
+              <h3>Détails de tâches</h3>
+              <p class="counter-value">{{ displayedDetTachesCount }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- ECharts Section -->
+        <div echarts [options]="chartOption" class="demo-chart"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+.spacer{
+  flex: auto;
+}
+/* admin.component.css */
+
+.mat-nav-list .mat-list-item:hover {
+  background-color: white;
+  color: #3f51b5;
+}
+
+.mat-nav-list .mat-list-item:hover mat-icon {
+  color: #3f51b5;
+}

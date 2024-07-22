@@ -1,0 +1,53 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Mes Tâches</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <!-- Libellé Journée Column -->
+        <ng-container matColumnDef="libelleJournee">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Libellé Journée</th>
+          <td mat-cell *matCellDef="let element">{{element.libelleJournee}}</td>
+        </ng-container>
+
+        <!-- Date d'Opération Column -->
+        <ng-container matColumnDef="dateOperation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Date d'Opération</th>
+          <td mat-cell *matCellDef="let element">{{element.dateOperation}}</td>
+        </ng-container>
+
+        <!-- Remarques Column -->
+        <ng-container matColumnDef="remarques">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Remarques</th>
+          <td mat-cell *matCellDef="let element">{{element.remarques}}</td>
+        </ng-container>
+
+        <!-- Utilisateur Column -->
+        <ng-container matColumnDef="utilisateur">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Utilisateur</th>
+          <td mat-cell *matCellDef="let element">{{element.users.nom}}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="onEdit(element.idHEntTache)">Modifier</button>
+            <button mat-button color="warn" (click)="onDelete(element.idHEntTache)">Supprimer</button>
+            <button mat-button (click)="onPrint(element.idHEntTache)">Imprimer</button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20, 30, 50, 100]"
+                     showFirstLastButtons
+                     aria-label="Select page of tasks">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

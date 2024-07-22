@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Add User</h1>
+<div mat-dialog-content>
+  <form [formGroup]="userForm">
+    <!-- Name -->
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="nom">
+    </mat-form-field>
+
+    <!-- Age -->
+    <mat-form-field appearance="fill">
+      <mat-label>Age</mat-label>
+      <input matInput formControlName="age" type="number">
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email">
+    </mat-form-field>
+
+    <!-- Family User Selection -->
+
+    <mat-form-field>
+      <mat-label>FUser</mat-label>
+      <mat-select formControlName="fuser">
+        <mat-option *ngFor="let fuser of fusers" [value]="fuser.idFUser">
+          {{ fuser.libelleFamille }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Image Upload -->
+    <!-- Remove the below input and img elements -->
+    <!-- <input type="file" (change)="onFileSelected($event)">
+    <img *ngIf="selectedImageSrc" [src]="selectedImageSrc" alt="Selected Image" style="max-width: 100%; margin-top: 10px;"> -->
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="onSubmit()" [disabled]="userForm.invalid">Add</button>
+</div>

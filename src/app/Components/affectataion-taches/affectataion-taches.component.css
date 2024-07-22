@@ -1,0 +1,93 @@
+/* General container style */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th.mat-header-cell, td.mat-cell {
+  padding: 8px;
+  text-align: left;
+}
+
+th.mat-header-cell {
+  background-color: #3f51b5;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+td.mat-cell {
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+}
+
+.mat-form-field {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Button styles */
+button.mat-raised-button {
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+}
+
+button.mat-raised-button[color="warn"] {
+  margin-right: 10px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 0 12px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  min-height: 36px;
+  padding: 4px 0;
+}
+
+.mat-select {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 36px;
+  line-height: 36px;
+}
+
+.mat-input-element {
+  height: 36px;
+  line-height: 36px;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  table, th.mat-header-cell, td.mat-cell {
+    font-size: 14px;
+  }
+}
+mat-icon-button {
+  margin: 0 5px;
+}

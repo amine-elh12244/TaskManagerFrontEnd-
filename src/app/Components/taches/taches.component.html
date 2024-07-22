@@ -1,0 +1,67 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Gestion de Tache</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <button mat-raised-button color="primary" (click)="openAddDialog()">Ajouter Tache</button>
+
+
+      <form class="form">
+        <mat-form-field appearance="fill">
+          <mat-label>libelle Tache</mat-label>
+          <input matInput [(ngModel)]="libelleTache" (change)="searchparlibelleTache($event)">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Coefficient</mat-label>
+          <input matInput [(ngModel)]="coefficient" (change)="searchparCoefficient($event)">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Remarques</mat-label>
+          <input matInput [(ngModel)]="remarques" (change)="searchparRemarque($event)">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="search()">Search</button>
+      </form>
+
+
+
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <!-- Libellé Tache Column -->
+        <ng-container matColumnDef="libelle_tache">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Libellé Tache</th>
+          <td mat-cell *matCellDef="let element">{{ element.libelleTache }}</td>
+        </ng-container>
+
+        <!-- Coefficient Column -->
+        <ng-container matColumnDef="coefficient">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Coefficient</th>
+          <td mat-cell *matCellDef="let element">{{ element.coefficient }}</td>
+        </ng-container>
+
+        <!-- Remarques Column -->
+        <ng-container matColumnDef="remarques">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Remarques</th>
+          <td mat-cell *matCellDef="let element">{{ element.remarques }}</td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="openEditDialog(element)">Edit</button>
+            <button mat-button color="warn" (click)="deleteTache(element.idTache)">Delete</button>
+            <button mat-button color="blue" (click)="generateAndShowPDF(element)">Imprimer</button>
+
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20, 30, 50, 100]" showFirstLastButtons aria-label="Select page of Taches">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

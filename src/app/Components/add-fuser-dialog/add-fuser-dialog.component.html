@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Add New FUser</h1>
+<div mat-dialog-content>
+  <form [formGroup]="fUserForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Libellé Famille</mat-label>
+      <input matInput formControlName="libelleFamille">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Coefficient</mat-label>
+      <input matInput formControlName="coefficient">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Remarques</mat-label>
+      <input matInput formControlName="remarques">
+    </mat-form-field>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit">Add</button>
+  </form>
+</div>

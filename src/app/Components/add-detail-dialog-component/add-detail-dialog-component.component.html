@@ -1,0 +1,43 @@
+<h1 mat-dialog-title>Ajouter un Détail de Tâche</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Tâche</mat-label>
+    <mat-select [(ngModel)]="tache" (selectionChange)="updateCoefficient()">
+      <mat-option *ngFor="let tache of taches" [value]="tache">{{ tache.libelleTache }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Heure Début</mat-label>
+    <input matInput type="time" [(ngModel)]="hdebut" (change)="calculateDifference()">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Heure Fin</mat-label>
+    <input matInput type="time" [(ngModel)]="hfin" (change)="calculateDifference()">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Temps Différence (minutes)</mat-label>
+    <input matInput [value]="tempsDiff" disabled>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Coefficient</mat-label>
+    <input matInput [value]="coefficient" disabled>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Prix Calculé</mat-label>
+    <input matInput [value]="prixCalc" disabled>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Remarques</mat-label>
+    <input matInput [(ngModel)]="remarques">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button [mat-dialog-close]="{ tache: tache, hdebut: hdebut, hfin: hfin, tempsDiff: tempsDiff, coefficient: coefficient, prixCalc: prixCalc, remarques: remarques }">Ajouter</button>
+</div>

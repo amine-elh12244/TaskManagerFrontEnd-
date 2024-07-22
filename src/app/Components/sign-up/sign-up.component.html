@@ -1,0 +1,60 @@
+<div class="sign-up-page">
+  <div class="image-container">
+    <img src="assets/half.jpeg" alt="Background Image" class="background-image">
+  </div>
+  <div class="form-container">
+    <div class="logo-container">
+      <img src="assets/logo.jpeg" alt="Logo" class="logo">
+    </div>
+    <div class="sign-up-container">
+      <h2>S'inscrire</h2>
+      <form [formGroup]="signUpFormGroup" (ngSubmit)="handleSignUp()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nom d'utilisateur</mat-label>
+          <input matInput formControlName="username" placeholder="Nom d'utilisateur">
+          <mat-error *ngIf="signUpFormGroup.get('username')?.hasError('required')">
+            Le nom d'utilisateur est requis
+          </mat-error>
+          <mat-error *ngIf="signUpFormGroup.get('username')?.hasError('minlength')">
+            Le nom d'utilisateur doit comporter au moins 3 caractères
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Email">
+          <mat-error *ngIf="signUpFormGroup.get('email')?.hasError('required')">
+            L'email est requis
+          </mat-error>
+          <mat-error *ngIf="signUpFormGroup.get('email')?.hasError('email')">
+            Veuillez entrer un email valide
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Nom</mat-label>
+          <input matInput formControlName="nom" placeholder="Nom">
+          <mat-error *ngIf="signUpFormGroup.get('nom')?.hasError('required')">
+            Le nom est requis
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Prénom</mat-label>
+          <input matInput formControlName="prenom" placeholder="Prénom">
+          <mat-error *ngIf="signUpFormGroup.get('prenom')?.hasError('required')">
+            Le prénom est requis
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe</mat-label>
+          <input type="password" matInput formControlName="password" placeholder="Mot de passe">
+          <mat-error *ngIf="signUpFormGroup.get('password')?.hasError('required')">
+            Le mot de passe est requis
+          </mat-error>
+          <mat-error *ngIf="signUpFormGroup.get('password')?.hasError('minlength')">
+            Le mot de passe doit comporter au moins 6 caractères
+          </mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="signUpFormGroup.invalid">S'inscrire</button>
+      </form>
+    </div>
+  </div>
+</div>

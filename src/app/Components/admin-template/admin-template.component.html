@@ -1,0 +1,76 @@
+<mat-toolbar color="primary" style="background-color: white;">
+  <button mat-icon-button (click)="drawer.toggle()" style="color: #3f51b5;">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span style="color: #3f51b5;">Gestionnaire de taches</span>
+
+  <span class="spacer"></span>
+  <button mat-button routerLink="/admin/home" style="color: #3f51b5;">
+    <mat-icon>notifications</mat-icon>
+  </button>
+
+  <button mat-button routerLink="/admin/home" style="color: #3f51b5;">
+    <mat-icon>home</mat-icon>
+    Home
+  </button>
+
+
+  <button mat-button *ngIf="authenticated" style="color: #3f51b5;">
+    <mat-icon>person</mat-icon>
+    {{authService.authenticatedUser?.nom}}
+  </button>
+  <button (click)="logout()" mat-raised-button color="primary" style="color: white;">
+    <mat-icon>logout</mat-icon>
+    LogOut
+  </button>
+</mat-toolbar>
+
+<mat-drawer-container>
+  <mat-drawer #drawer mode="side" position="start" opened="true" style="background-color: #3f51b5;">
+    <mat-nav-list>
+      <mat-list-item>
+        <button mat-button routerLink="/admin/dashboard" style="color: white;">
+          <mat-icon>dashboard</mat-icon>
+          Tableau de bord
+        </button>
+      </mat-list-item>
+
+      <mat-list-item>
+        <button mat-button routerLink="/admin/familleusers" style="color: white;">
+          <mat-icon>group</mat-icon>
+          Famille Users
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button routerLink="/admin/users" style="color: white;">
+          <mat-icon>people</mat-icon>
+          Users
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button routerLink="/admin/taches" style="color: white;">
+          <mat-icon>assignment</mat-icon>
+          Taches
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button routerLink="/admin/affectationtaches" style="color: white;">
+          <mat-icon>add_circle</mat-icon>
+          Ajouter une affectation
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button routerLink="/admin/gestiontache" style="color: white;">
+          <mat-icon>work</mat-icon>
+          Gestions Taches
+        </button>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div style="min-height: 600px; background-color: white;">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

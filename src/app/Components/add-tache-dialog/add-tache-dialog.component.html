@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Ajouter Tache</h1>
+<div mat-dialog-content>
+  <form [formGroup]="tacheForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Libellé Tache</mat-label>
+      <input matInput formControlName="libelleTache">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Coefficient</mat-label>
+      <input matInput formControlName="coefficient" type="number">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Remarques</mat-label>
+      <input matInput formControlName="remarques">
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button color="primary" (click)="onSubmit()" [disabled]="tacheForm.invalid">Add</button>
+</div>

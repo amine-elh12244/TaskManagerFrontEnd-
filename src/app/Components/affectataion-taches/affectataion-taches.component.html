@@ -1,0 +1,98 @@
+<div class="container">
+  <h1>Gestion des Tâches Quotidiennes</h1>
+
+  <!-- Form to add a new HEntTache -->
+  <form (ngSubmit)="addEntTache()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Libellé Journée</mat-label>
+      <input matInput [(ngModel)]="entTache.libelleJournee" name="libelleJournee">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Utilisateur</mat-label>
+      <mat-select [(ngModel)]="entTache.users" name="users">
+        <mat-option *ngFor="let user of users" [value]="user">{{ user.nom }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Date d'Opération</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="entTache.dateOperation" name="dateOperation">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Remarques</mat-label>
+      <input matInput [(ngModel)]="entTache.remarques" name="remarques">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Ajouter Tâches</button>
+  </form>
+
+  <!-- Table to display HDetTache details -->
+  <h2>Détails Tâche</h2>
+  <table mat-table [dataSource]="detTaches" class="mat-elevation-z8 full-width">
+
+    <!-- Tache Column -->
+    <ng-container matColumnDef="tache">
+      <th mat-header-cell *matHeaderCellDef>Tâche</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.tache.libelleTache }}</td>
+    </ng-container>
+
+    <!-- Heure Début Column -->
+    <ng-container matColumnDef="hdebut">
+      <th mat-header-cell *matHeaderCellDef>Heure Début</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.hdebut }}</td>
+    </ng-container>
+
+    <!-- Heure Fin Column -->
+    <ng-container matColumnDef="hfin">
+      <th mat-header-cell *matHeaderCellDef>Heure Fin</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.hfin }}</td>
+    </ng-container>
+
+    <!-- Temps Différence Column -->
+    <ng-container matColumnDef="tempsDiff">
+      <th mat-header-cell *matHeaderCellDef>Temps Différence (minutes)</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.tempsDiff }}</td>
+    </ng-container>
+
+    <!-- Coefficient Column -->
+    <ng-container matColumnDef="coefficient">
+      <th mat-header-cell *matHeaderCellDef>Coefficient</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.coefficient }}</td>
+    </ng-container>
+
+    <!-- Prix Calculé Column -->
+    <ng-container matColumnDef="prixCalc">
+      <th mat-header-cell *matHeaderCellDef>Prix Calculé</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.prixCalc }}</td>
+    </ng-container>
+
+    <!-- Remarques Column -->
+    <ng-container matColumnDef="remarques">
+      <th mat-header-cell *matHeaderCellDef>Remarques</th>
+      <td mat-cell *matCellDef="let detail">{{ detail.remarques }}</td>
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>Action</th>
+      <td mat-cell *matCellDef="let detail">
+        <button mat-icon-button color="warn" (click)="removeDetail(detail)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="accent"  (click)="openUpdateDialog(detail)" >
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Table Header and Rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <button mat-raised-button color="accent" (click)="addDetail()">Ajouter Ligne</button>
+</div>
