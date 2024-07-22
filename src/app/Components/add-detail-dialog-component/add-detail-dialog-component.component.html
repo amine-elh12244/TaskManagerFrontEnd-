@@ -24,7 +24,7 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Coefficient</mat-label>
-    <input matInput [value]="coefficient" disabled>
+    <input matInput type="number" [(ngModel)]="coefficient" (change)="calculatePrice()">
   </mat-form-field>
 
   <mat-form-field appearance="fill">
