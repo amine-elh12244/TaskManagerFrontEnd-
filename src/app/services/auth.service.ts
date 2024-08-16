@@ -1,65 +1,74 @@
 import { Injectable } from '@angular/core';
-import { AppUser } from '../model/Appuser';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { AppUser } from '../model/Appuser';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public host: string = "http://localhost:8081/api";
-  users: AppUser[] = [];
-  authenticatedUser: AppUser | undefined;
+  public host: string = "http://localhost:8081/api/auth";
+  private token: string | null = null;
+  private authenticatedUser: AppUser | undefined;
 
-  private _authenticatedUserId: string | undefined;
+  constructor(private http: HttpClient) {}
 
-  set authenticatedUserId(id: string) {
-    this._authenticatedUserId = id;
+
+  public register(user: AppUser): Observable<string> {
+    return this.http.post<string>(`${this.host}/register`, user, { responseType: 'text' as 'json' }).pipe(
+      catchError(error => {
+        return throwError(() => new Error('Registration failed'));
+      })
+    );
   }
 
-  get authenticatedUserId(): string {
-    return <string>this._authenticatedUserId;
+
+  public login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.host}/login`, { email, password }).pipe(
+      map(response => {
+        this.token = response.accessToken;
+        if (this.token != null) {
+          localStorage.setItem('authToken', this.token);
+        }
+        // Set the authenticated user
+        this.authenticatedUser = response.user;
+        localStorage.setItem('authUser', JSON.stringify(this.authenticatedUser));
+        return response;
+      }),
+      catchError(error => {
+        return throwError(() => new Error('Login failed'));
+      })
+    );
   }
 
-  constructor(private http: HttpClient) {
-    this.getUsers().subscribe(data => {
-      this.users = data;
-    });
+  public logout(): void {
+    this.token = null;
+    this.authenticatedUser = undefined;
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
   }
 
-  public getUsers(): Observable<AppUser[]> {
-    return this.http.get<AppUser[]>(`${this.host}/admin/all`);
-  }
-
-  public login(email: string, password: string): Observable<AppUser> {
-    let appUser = this.users.find(u => u.email == email);
-    if (!appUser) return throwError(() => new Error("User Not Found !"));
-    console.log('Input password:', password);
-    console.log('Stored password:', appUser.password);
-    if (appUser.password != password) return throwError(() => new Error("Wrong Password !"));
-
-    this.authenticatedUserId = appUser.id.toString(); // set the authenticated user's ID
-    return of(appUser);
-  }
-
-  public authenticateUser(appUser: AppUser): Observable<boolean> {
-    this.authenticatedUser = appUser;
-    localStorage.setItem("authUser", JSON.stringify({ id: appUser.id, email: appUser.email, jwt: "WT_TOKEN" }));
-    console.log(appUser.email);
-    return of(true);
+  public getToken(): string | null {
+    return this.token;
   }
 
   public isAuthenticated(): boolean {
-    return this.authenticatedUser != undefined;
+    return this.token != null;
   }
 
-  public logout(): Observable<boolean> {
-    this.authenticatedUser = undefined;
-    localStorage.removeItem("authUser");
-    return of(true);
+  public getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders().set('Authorization', `Bearer ${this.getToken()}`);
   }
 
-  public register(user: AppUser): Observable<AppUser> {
-    return this.http.post<AppUser>(`${this.host}/admin/register`, user);
+
+  public getAuthenticatedUser(): Observable<AppUser> {
+    return this.http.get<AppUser>(`${this.host}/me`, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching authenticated user', error);
+        return throwError(() => new Error('Failed to fetch user data'));
+      })
+    );
   }
+
 }

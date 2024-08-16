@@ -35,11 +35,11 @@ export class SignUpComponent {
 
     const newUser: any = this.signUpFormGroup.value;
     this.authService.register(newUser).subscribe({
-      next: (user) => {
+      next: (response) => {
         Swal.fire({
           icon: 'success',
           title: 'Succès',
-          text: 'Utilisateur créé avec succès!',
+          text: response, // Display the plain text response
           confirmButtonText: 'OK'
         }).then(() => {
           this.router.navigate(['/']);

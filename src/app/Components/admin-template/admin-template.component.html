@@ -15,10 +15,9 @@
     Home
   </button>
 
-
   <button mat-button *ngIf="authenticated" style="color: #3f51b5;">
     <mat-icon>person</mat-icon>
-    {{authService.authenticatedUser?.nom}}
+    {{ authenticatedUser?.nom }}
   </button>
   <button (click)="logout()" mat-raised-button color="primary" style="color: white;">
     <mat-icon>logout</mat-icon>
